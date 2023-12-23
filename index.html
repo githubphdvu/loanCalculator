@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Loan Calculator</title>
+<!--JS for Jasmine standalone 5.1.1:not forget to include lib/ folder-->
+<link rel="shortcut icon" type="image/png" href="lib/jasmine-5.1.1/jasmine_favicon.png">
+<link rel="stylesheet" href="lib/jasmine-5.1.1/jasmine.css">
+<script src="lib/jasmine-5.1.1/jasmine.js"></script>
+<script src="lib/jasmine-5.1.1/jasmine-html.js"></script>
+<script src="lib/jasmine-5.1.1/boot0.js"></script>
+<script src="lib/jasmine-5.1.1/boot1.js"></script><!--optional:configure Jasmine env-->
+<!-- JS for Jasmine standalone library-->
+  <style>
+body {
+  margin: 14%;
+  margin-top: 40px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+@media screen and (max-width: 900px) {
+  body {
+    margin: 5%;
+  }
+}
+header > h1 {
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 1em;
+  color: grey;
+}
+.container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  background-color: rgb(211,211,211);
+  color: black;
+  font-size: 1em;
+}
+@media screen and (max-width: 600px) {
+  .container {
+    font-size: 1em;
+  }
+  input {
+    font-size: .9em;
+    padding: 1px;
+  }
+}
+.container > form {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid darkgrey;
+  flex: 1;
+  padding: 10px;
+}
+.container > form > label {
+  padding: 10px;
+  padding-left: 0px;
+  font-size: 1em;
+}
+button {
+  font-size: 1em;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  background-color: rgb(150,150,150);
+  color: white;
+  max-width: 300px;
+  min-width: 230px;
+  border: 3px solid black
+}
+input {
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  padding: 3px;
+  padding-left: 10px;
+  font-size: 1.3em;
+}
+.container > div {
+  flex: 1;
+  border: 2px solid darkgrey;
+  padding-left: 5px;
+}
+.container h3 {
+  font-size: 1em;
+}
+#idSubmit {
+  width: 60px;
+  align-self: center;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h2>💰💲Loan Calculator💵</h2>
+  </header>
+  <section class="container">
+    <form id="idForm">
+      <label>Loan Amount
+        <input type="text" id="idLoan">
+      </label>
+      <label>Term in Years
+        <input type="text" id="idYears">
+      </label>
+      <label>Yearly Rate
+        <input type="text" id="idRate">
+      </label>
+      <button type="submit" id="idSubmit">Calculate</button>
+    </form>
+    <div>
+      <h3>Monthly Payment<h3>
+      <span id="idPayment"></span>
+    </div>
+  </section>
+  
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  const form = document.getElementById("idForm")
+  if (form) {
+    const values={amount:100,years:1,rate:10}
+
+    document.getElementById("idLoan").value=values.amount
+    document.getElementById("idYears").value=values.years
+    document.getElementById("idRate").value=values.rate
+
+    display(payment(getValues()))
+
+    form.addEventListener("submit",e=>{
+      e.preventDefault()
+      display(payment(getValues()))
+    })
+  }
+})
+function display(monthlyPayment) {
+  document.getElementById("idPayment").innerText = "$" + monthlyPayment
+}
+function getValues() {
+  return {
+    amount:document.getElementById("idLoan").value,
+    years: document.getElementById("idYears").value,
+    rate:  document.getElementById("idRate").value
+  }
+}
+function payment(values) {
+  const monthlyRate = (values.rate/100)/12
+  return ((monthlyRate*values.amount)/(1-Math.pow((1+monthlyRate),-Math.floor(values.years*12)))).toFixed(2)
+}    
+</script>
+  
+  <!-- <script src="script-test.js"></script> -->
+<script>
+describe('group1',()=>{
+  it('should calculate payment correctly',()=>{expect(payment({amount:100,years:1,rate:10})).toEqual('8.79')})
+})  
+describe('group2',()=>{
+  it("payment should have 2 decimal places",()=>{expect(payment({amount:100,years:1,rate:5})).toEqual('8.56')})
+  it("should handle high rates",()=>{expect(payment({amount:100,years:1,rate:99})).toEqual('13.44')})
+})
+</script>  
+</body>
+</html>
